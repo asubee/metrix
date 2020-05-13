@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    restart: always
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-files:/var/lib/grafana
+volumes:
+  grafana-files:
+    external: true
