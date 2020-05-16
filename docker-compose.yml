@@ -7,13 +7,36 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9090:9090"
+    links:
+      - node-exporter
+      - container-exporter
     restart: always
   grafana:
     image: grafana/grafana
     ports:
-      - "3000:3000"
+      - "9080:3000"
     volumes:
       - grafana-files:/var/lib/grafana
+  node-exporter:
+    image: quay.io/prometheus/node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc
+      - /sys:/host/sys
+      - /:/rootfs
+    restart: always
+  container-exporter:
+    image: budry/cadvisor-arm:latest
+    ports:
+     - "9110:8080"
+    volumes:
+     - /:/rootfs:ro
+     - /var/run:/var/run:rw
+     - /sys:/sys:ro
+     - /var/lib/docker/:/var/lib/docker:ro
+    restart: always
 volumes:
   grafana-files:
     external: true
+
